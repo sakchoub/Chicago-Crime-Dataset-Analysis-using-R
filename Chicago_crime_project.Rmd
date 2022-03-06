@@ -1,0 +1,259 @@
+
+```{r}
+library(tidyverse)
+
+crime<- read.csv("F:/SEM1/Advance_Data_Analytics/Project/Project_2/crime1.csv", header=TRUE)
+str(crime)
+
+```
+
+>The dataset consist of 25 variables with 1472853 observations.
+
+
+```{r}
+data2016<-subset(crime,crime$YEAR == 2016)
+data2017<-subset(crime,crime$YEAR == 2017)
+data2018<-subset(crime,crime$YEAR == 2018)
+data2019<-subset(crime,crime$YEAR == 2019)
+data2020<-subset(crime,crime$YEAR == 2020)
+data2021<-subset(crime,crime$YEAR == 2021)
+
+```
+
+
+
+```{r}
+
+crime2016<-data.frame( table(data2016$PRIMARYTYPE))
+names(crime2016)[1]<-'CrimeType'
+
+
+crime2017<-data.frame( table(data2017$PRIMARYTYPE))
+names(crime2017)[1]<-'CrimeType'
+
+
+crime2018<-data.frame( table(data2018$PRIMARYTYPE))
+names(crime2018)[1]<-'CrimeType'
+
+crime2019<-data.frame( table(data2019$PRIMARYTYPE))
+names(crime2019)[1]<-'CrimeType'
+
+
+crime2020<-data.frame( table(data2020$PRIMARYTYPE))
+names(crime2020)[1]<-'CrimeType'
+
+
+crime2021<-data.frame( table(data2021$PRIMARYTYPE))
+names(crime2021)[1]<-'CrimeType'
+
+
+```
+
+
+
+>HYPOTHESIS 1
+
+
+>To check whether the crime type committed most in year 2016 is the same type of crime committed in year 2017 using Hypothesis Testing. Here we are applying prop-test through which we will get the p-value. And on the basis of p-value we can come to a conclusion. We are using prop-test because to get accurate data with respect to the total number of crime.
+
+\begin{align*}
+H_0: \mu1 & = \mu2, \\
+H_1: \mu1 & \ne \mu2. 
+\end{align*}
+
+
+> H_0 is Null Hypothesis and H_1 is Alternative Hypothesis.
+
+```{r}
+#Hypothesis 1
+
+crime2016$CrimeType[which.max(crime2016$Freq)] # Primary type in 2016
+
+theft2016<-subset(crime2016$Freq,crime2016$CrimeType == 'THEFT')
+theft2016
+
+theft2017<-subset(crime2017$Freq,crime2017$CrimeType == 'THEFT')
+theft2017
+
+
+prop.test(x = c(theft2016,theft2017), n = c(nrow(data2016),nrow(data2017)), alternative = "greater", conf.level = 0.95)
+
+```
+
+>For the year 2016 THEFT is the most committed crime. The p-value of this hypothesis is greater than alpha i.e., 0.05. So we can accept the null hypothesis H_0 and agree that crime type committed most in 2016 is the same crime type committed in 2017.
+
+
+
+
+>HYPOTHESIS 2 
+
+>To check whether the crime committed most in a Region in year 2016 is the same Region for the year 2017 using Hypothesis Testing. Here we are applying prop-test through which we will get the p-value. And on the basis of p-value we can come to a conclusion.
+
+\begin{align*}
+H_0: \mu1 & = \mu2, \\
+H_1: \mu1 & \ne \mu2. 
+\end{align*}
+
+> H_0 is Null Hypothesis and H_1 is Alternative Hypothesis.
+
+```{r}
+
+
+Region2016<-data.frame(table(data2016$REGION))
+names(Region2016)[1]<-'Region'
+Region2016
+
+Region2017<-data.frame(table(data2017$REGION))
+names(Region2017)[1]<-'Region'
+Region2017
+
+Region2016$Region[which.max(Region2016$Freq)] # region in 2016
+
+
+South2016<-subset(Region2016$Freq,Region2016$Region == 'South')
+South2016
+
+South2017<-subset(Region2017$Freq,Region2017$Region == 'South')
+South2017
+
+
+prop.test(x = c(South2016,South2017), n = c(nrow(data2016),nrow(data2017)), alternative = "greater", conf.level = 0.95)
+
+
+```
+
+
+>The p-value of this hypothesis is smaller than alpha i.e., 0.05 but mu1 is equal to mu2.So, we can accept the null hypothesis H_0 and agree that the Region in which crime committed most in 2016 is the same Region for year 2017 where crime were committed most i.e., Region South.
+
+
+
+>>HYPOTHESIS 3
+
+>To check whether the domestic crime rate in 2020 increased or not in comparison to 2019 we are using Hypothesis Testing. As per my assumption domestic cases should increase of the lockdown people stayed mostly at home.  Here we are applying prop-test through which we will get the p-value. And on the basis of p-value we can come to a conclusion.
+
+\begin{align*}
+H_0: \mu1 & = \mu2, \\
+H_1: \mu1 & \ne \mu2. 
+\end{align*}
+
+> H_0 is Null Hypothesis and H_1 is Alternative Hypothesis.
+
+```{r}
+#Hypothesis 3
+Domestic2019<-subset(crime,crime$YEAR == 2019 & crime$DOMESTIC_01 == 1)
+nrow(Domestic2019)
+
+Domestic2020<-subset(crime,crime$YEAR == 2020 & crime$DOMESTIC_01 == 1)
+nrow(Domestic2020)
+
+
+prop.test(x = c(nrow(Domestic2019),nrow(Domestic2020)), n = c(nrow(data2019),nrow(data2020)), alternative = "greater", conf.level = 0.95)
+
+```
+
+
+>The p-value of this hypothesis is greater than alpha i.e., 0.05. So, we can accept the NULL hypothesis H_0 and agree that the Domestic Violence cases increased in year 2020 in comparison to the year of 2019 and it makes sense because of the lockdown people stayed at home.
+
+
+
+
+>HYPOTHESIS 4
+
+>To check whether the number of arrest in year 2017  increased or decreased in comparsion to  year 2016. We will check this by using Hypothesis Testing. Here we are applying prop-test through which we will get the p-value. And on the basis of p-value we can come to a conclusion.
+
+\begin{align*}
+H_0: \mu1 & = \mu2, \\
+H_1: \mu1 & \ne \mu2. 
+\end{align*}
+
+> H_0 is Null Hypothesis and H_1 is Alternative Hypothesis.
+
+```{r}
+#Hypothesis 4
+Arrest2016<-subset(crime,crime$YEAR == 2016 & crime$ARREST_01 == 1)
+nrow(Arrest2016)
+
+Arrest2017<-subset(crime,crime$YEAR == 2017 & crime$ARREST_01 == 1)
+nrow(Arrest2017)
+
+
+prop.test(x = c(nrow(Arrest2016),nrow(Arrest2017)), n = c(nrow(data2016),nrow(data2017)), alternative = "greater", conf.level = 0.95)
+
+```
+
+>The p-value of this hypothesis is smaller than alpha i.e., 0.05 and the mu1 is also not equal to mu2. So, the proportion is also not equal. So we can accept the Alternate hypothesis H_1 and agree that the less criminal got arrested in year 2017 incomparison to the year 2016.
+
+
+
+
+```{r}
+
+LocationDesc2016<-data.frame(sort(table(data2016$LOCATIONDESCRIPTION),decreasing = TRUE))
+names(LocationDesc2016)[1]<- 'LOCATIONDESCRIPTION'
+LocationDesc2016<- cbind(LocationDesc2016,Year=c(2016))
+
+
+LocationDesc2017<-data.frame(sort(table(data2017$LOCATIONDESCRIPTION),decreasing = TRUE))
+names(LocationDesc2017)[1]<- 'LOCATIONDESCRIPTION'
+LocationDesc2017<- cbind(LocationDesc2017,Year=c(2017))
+
+
+
+LocationDesc2018<-data.frame(sort(table(data2018$LOCATIONDESCRIPTION),decreasing = TRUE))
+names(LocationDesc2018)[1]<- 'LOCATIONDESCRIPTION'
+LocationDesc2018<- cbind(LocationDesc2018,Year=c(2018))
+
+
+
+LocationDesc2019<-data.frame(sort(table(data2019$LOCATIONDESCRIPTION),decreasing = TRUE))
+names(LocationDesc2019)[1]<- 'LOCATIONDESCRIPTION'
+LocationDesc2019<- cbind(LocationDesc2019,Year=c(2019))
+
+
+LocationDesc2020<-data.frame(sort(table(data2020$LOCATIONDESCRIPTION),decreasing = TRUE))
+names(LocationDesc2020)[1]<- 'LOCATIONDESCRIPTION'
+LocationDesc2020<- cbind(LocationDesc2020,Year=c(2020))
+
+
+LocationDesc2021<-data.frame(sort(table(data2021$LOCATIONDESCRIPTION),decreasing = TRUE))
+names(LocationDesc2021)[1]<- 'LOCATIONDESCRIPTION'
+LocationDesc2021<- cbind(LocationDesc2021,Year=c(2021))
+
+
+Top5allyears<- merge(merge(merge(merge(merge(LocationDesc2016[1:5,1:3],LocationDesc2017[1:5,1:3],all = TRUE,sort = FALSE),LocationDesc2018[1:5,1:3],all = TRUE,sort = FALSE),LocationDesc2019[1:5,1:3],all = TRUE,sort = FALSE),LocationDesc2020[1:5,1:3],all = TRUE,sort = FALSE),LocationDesc2021[1:5,1:3],all = TRUE, sort = FALSE)
+
+Top5allyears
+```
+
+>From the above result we can see the top 5 crime location for each year. From 2016 to 2019 top 5 crime location are same for all the 4 years i.e., Street, Residence, Apartment, Sidewalk, Other. For the year 2020 Other crime location is replaced by Small Retail Shop crime location in the top 5 list and for year 2021 Small Retail Shop crime location is replaced by Parking Lot/ Garage crime location in top 5 crime location.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
